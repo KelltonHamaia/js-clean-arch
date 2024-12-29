@@ -1,5 +1,5 @@
-module.exports = {
-    async createUser({ fullname, cpf, phoneNumber, address, email}) {
+module.exports = function CreateUserUseCase({ userRepository }) {
+    return async ({ fullname, cpf, phoneNumber, address, email}) => {
         await userRepository.save({ 
             fullname, 
             cpf, 
