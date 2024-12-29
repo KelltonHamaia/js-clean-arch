@@ -1,3 +1,4 @@
+const { Either } = require("../errors");
 const AppError = require("../errors/AppError");
 
 module.exports = function CreateUserUseCase({ userRepository }) {
@@ -10,8 +11,7 @@ module.exports = function CreateUserUseCase({ userRepository }) {
         if(!isMissingParams) throw new AppError(AppError.missingParams);
 
         const checkIfCpfIsTakenByAnUser = await userRepository.findByCpf(cpf);
-
-        if(checkIfCpfIsTakenByAnUser) throw new AppError("CPF Already registered.");
+        if(checkIfCpfIsTakenByAnUser) return Either.Left(Either.FieldAlreadyTaken("cpf"));
 
         await userRepository.save({ 
             fullname, 
@@ -20,5 +20,7 @@ module.exports = function CreateUserUseCase({ userRepository }) {
             address, 
             email 
         });
+
+        return Either.Right(null);
     }
 }

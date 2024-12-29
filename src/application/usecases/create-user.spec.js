@@ -1,3 +1,4 @@
+const { Either } = require("../errors");
 const AppError = require("../errors/AppError");
 const createUserUseCase = require("./create-user")
 
@@ -20,7 +21,7 @@ describe("Create user Use Case", () => {
         const sut = createUserUseCase({ userRepository });
         const output = await sut(userDTO)
 
-        expect(output).toBeUndefined();
+        expect(output.right).toBeNull();
         expect(userRepository.save).toHaveBeenCalledWith(userDTO);
         expect(userRepository.save).toHaveBeenCalledTimes(1);
     });
@@ -36,6 +37,8 @@ describe("Create user Use Case", () => {
 
     it("Should return an error if the provided CPF is already being used", async () => {
 
+        userRepository.findByCpf.mockResolvedValueOnce(true);
+        
         const userDTO = {
             fullname: "kellton",
             cpf:  "cpf_taken",
@@ -44,11 +47,13 @@ describe("Create user Use Case", () => {
             email: "kell@gmail.com"  
         }
 
-        userRepository.findByCpf.mockResolvedValueOnce(true);
-
         const sut = createUserUseCase({ userRepository });
-        await expect(() => sut(userDTO)).rejects.toThrow("CPF Already registered.");
+        const output = await sut(userDTO);
 
+        expect(output.right).toBeNull();
+        expect(output.left).toEqual(Either.FieldAlreadyTaken("cpf"));
+        expect(userRepository.findByCpf).toHaveBeenCalledWith(userDTO.cpf);
+        expect(userRepository.findByCpf).toHaveBeenCalledTimes(1);
     })
 
 
