@@ -27,5 +27,12 @@ describe("Create user Use Case", () => {
 
     it("Should return an error if no userRepository is provided", () => {
         expect(() => createUserUseCase({ })).toThrow(new AppError(AppError.dependencies));
-    })
+    });
+
+    it("Should return an error if tehere are missing params", async () => {
+        const sut = createUserUseCase({ userRepository });
+        await expect(() => sut({})).rejects.toThrow( new AppError(AppError.missingParams));
+    });
+
+
 })
