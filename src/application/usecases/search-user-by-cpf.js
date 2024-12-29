@@ -1,6 +1,6 @@
 const { AppError, Either } = require("../errors");
 
-module.exports = function SearchByCPFUseCase({ userRepository }) {
+module.exports = function SearchUserByCPFUseCase({ userRepository }) {
 
     return async ({ cpf }) => {
     
