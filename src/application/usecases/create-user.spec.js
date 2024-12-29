@@ -1,3 +1,4 @@
+const AppError = require("../errors/AppError");
 const createUserUseCase = require("./create-user")
 
 describe("Create user Use Case", () => {
@@ -25,6 +26,6 @@ describe("Create user Use Case", () => {
 
 
     it("Should return an error if no userRepository is provided", () => {
-        expect(() => createUserUseCase({ })).toThrow("UserRepository not provided.");
+        expect(() => createUserUseCase({ })).toThrow(new AppError(AppError.dependencies));
     })
 })
