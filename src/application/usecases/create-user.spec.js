@@ -6,7 +6,8 @@ describe("Create user Use Case", () => {
 
     const userRepository = {
         save: jest.fn(),
-        findByCpf: jest.fn()
+        findByCpf: jest.fn(),
+        findByEmail: jest.fn()
     }
 
     it("Should be able to register an user", async () => {
@@ -54,7 +55,31 @@ describe("Create user Use Case", () => {
         expect(output.left).toEqual(Either.FieldAlreadyTaken("cpf"));
         expect(userRepository.findByCpf).toHaveBeenCalledWith(userDTO.cpf);
         expect(userRepository.findByCpf).toHaveBeenCalledTimes(1);
+    });
+
+    it("Should return an error if the provided email is already being used.", async () => {
+        userRepository.findByCpf.mockResolvedValueOnce(false);
+        userRepository.findByEmail.mockResolvedValueOnce(true);
+
+        const userDTO = {
+            fullname: "kellton",
+            cpf:  "cpf",
+            phoneNumber:  12345678,
+            address: "St Louis", 
+            email: "email_taken"  
+        }
+
+        const sut = createUserUseCase({ userRepository });
+        const output = await sut(userDTO);
+
+        expect(output.right).toBeNull();
+        expect(output.left).toEqual(Either.FieldAlreadyTaken("email"));
+        expect(userRepository.findByEmail).toHaveBeenCalledWith(userDTO.email);
+        expect(userRepository.findByEmail).toHaveBeenCalledTimes(1);
+
     })
+
+
 
 
 })

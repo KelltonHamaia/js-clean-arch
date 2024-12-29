@@ -13,6 +13,9 @@ module.exports = function CreateUserUseCase({ userRepository }) {
         const checkIfCpfIsTakenByAnUser = await userRepository.findByCpf(cpf);
         if(checkIfCpfIsTakenByAnUser) return Either.Left(Either.FieldAlreadyTaken("cpf"));
 
+        const checkIfEmailIsTakenByAnUser = await userRepository.findByEmail(email);
+        if(checkIfEmailIsTakenByAnUser) return Either.Left(Either.FieldAlreadyTaken("email"));
+
         await userRepository.save({ 
             fullname, 
             cpf, 
