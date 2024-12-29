@@ -22,4 +22,9 @@ describe("Create user Use Case", () => {
         expect(userRepository.save).toHaveBeenCalledWith(userDTO);
         expect(userRepository.save).toHaveBeenCalledTimes(1);
     });
+
+
+    it("Should return an error if no userRepository is provided", () => {
+        expect(() => createUserUseCase({ })).toThrow("UserRepository not provided.");
+    })
 })
