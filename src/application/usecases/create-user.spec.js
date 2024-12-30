@@ -55,7 +55,7 @@ describe("Create user Use Case", () => {
         expect(output.left).toEqual(Either.FieldAlreadyTaken("cpf"));
         expect(userRepository.findByCpf).toHaveBeenCalledWith(userDTO.cpf);
         expect(userRepository.findByCpf).toHaveBeenCalledTimes(1);
-    });
+    })
 
     it("Should return an error if the provided email is already being used.", async () => {
         userRepository.findByCpf.mockResolvedValueOnce(false);
