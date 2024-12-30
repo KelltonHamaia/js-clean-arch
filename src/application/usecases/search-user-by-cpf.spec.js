@@ -49,6 +49,11 @@ describe("Search user by CPF Use Case", () => {
 
     it("Should throw an AppError if no userRepository is provided", () => {
         expect(() => searchUserByCPFUseCase({ })).toThrow(AppError.dependencies);
+    });
+
+    it("Should throw an AppError if there are missing params", async () => {
+        const suv = searchUserByCPFUseCase({ userRepository });
+        await expect(suv({})).rejects.toThrow(new AppError(AppError.missingParams));
     })
 
 })
