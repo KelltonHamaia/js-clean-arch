@@ -22,16 +22,12 @@ module.exports = class Either {
         }
     }
 
-    static DepartureDateLowerThanReturnDate() {
-        return {
-            message: "A data de devolução deve ser maior que a data de retirada."
-        }
+    static DepartureDateLowerThanReturnDate = {
+        message: "A data de devolução deve ser maior que a data de retirada."
     }
 
-    static UserWithSameBookUnderPendingLoan() {
-        return {
-            message: "Usuário já possui empréstimo pendente do mesmo livro "
-        }
+    static UserWithSameBookUnderPendingLoan = {
+        message: "Usuário já possui empréstimo pendente do mesmo livro "
     }
 
 }

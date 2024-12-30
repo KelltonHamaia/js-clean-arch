@@ -43,7 +43,25 @@ describe("Borrow a book Use Case", () => {
         const output = await sut(borrowDTO);
 
         expect(output.left).toBe(Either.DepartureDateLowerThanReturnDate);
-    })
+    });
 
+    it("Should return an Either.left if the user has a book with ISBN under loan", async () => {
+
+        loanRepository.findBooksUnderLoanFromUser.mockResolvedValue(true);
+
+        const borrowDTO = {
+            userId: "valid_id",
+            bookId: "valid_id",
+            departureDate: new Date("2024-01-10"),
+            returnDate: new Date("2025-01-10")
+        }
+
+        const sut = borrowABookUseCase({ loanRepository });
+        const output = await sut(borrowDTO);
+
+        expect(output.left).toBe(Either.UserWithSameBookUnderPendingLoan);
+        expect(loanRepository.findBooksUnderLoanFromUser).toHaveBeenCalledTimes(1);
+        expect(loanRepository.findBooksUnderLoanFromUser).toHaveBeenCalledWith({ userId: borrowDTO.userId, bookId: borrowDTO.bookId });
+    })
 
 })
