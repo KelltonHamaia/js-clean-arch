@@ -1,3 +1,4 @@
+const { AppError } = require("../errors");
 const createBookUseCase = require("./create-book");
 
 describe("Create book Use Case", () => { 
@@ -22,5 +23,9 @@ describe("Create book Use Case", () => {
         expect(bookRepository.save).toHaveBeenCalledTimes(1);
         expect(bookRepository.save).toHaveBeenCalledWith(bookDTO);
 
+    })
+
+    it("Should throw an AppError if bookRepository is not provided", () => {
+        expect(() => createBookUseCase({ })).toThrow(new AppError(AppError.dependencies))      
     })
 })
