@@ -6,7 +6,7 @@ describe("Search Book by ISBN or Name", () => {
     };
 
     it("Should return a book by ISBN or Name", async () => {
-        
+
         const bookSearchDTO = {
             value: "valid_isbn"
         };
@@ -29,4 +29,22 @@ describe("Search Book by ISBN or Name", () => {
         expect(bookRepository.findByIsbnOrName).toHaveBeenCalledWith(bookSearchDTO.value);
         expect(bookRepository.findByIsbnOrName).toHaveBeenCalledTimes(1);
     });
+
+    it("Should return an empty array if no book is found", async () => {
+        
+        const bookSearchDTO = {
+            value: "invalid_isbn"
+        };
+
+        bookRepository.findByIsbnOrName.mockResolvedValue([]);
+
+        const sut = searchBookByIsbnOrNameUseCase({ bookRepository });
+        const output = await sut(bookSearchDTO);
+
+        expect(output.right).toEqual([]);
+        expect(bookRepository.findByIsbnOrName).toHaveBeenCalledTimes(1);
+        expect(bookRepository.findByIsbnOrName).toHaveBeenCalledWith(bookSearchDTO.value);
+
+    })
+
 });
