@@ -1,3 +1,4 @@
+const { AppError } = require("../errors");
 const searchBookByIsbnOrNameUseCase = require("./search-book-by-isbn-or-name");
 
 describe("Search Book by ISBN or Name", () => {
@@ -45,6 +46,12 @@ describe("Search Book by ISBN or Name", () => {
         expect(bookRepository.findByIsbnOrName).toHaveBeenCalledTimes(1);
         expect(bookRepository.findByIsbnOrName).toHaveBeenCalledWith(bookSearchDTO.value);
 
-    })
+    });
+
+    it("Should throw an AppError if no bookRepository is provided", () => {
+        expect(() => searchBookByIsbnOrNameUseCase({})).toThrow(new AppError(AppError.dependencies));
+    });
+
+    
 
 });
