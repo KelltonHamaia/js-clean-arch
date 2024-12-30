@@ -29,4 +29,21 @@ describe("Search user by CPF Use Case", () => {
         expect(userRepository.findByCpf).toHaveBeenCalledWith(cpfDTO.cpf);
         expect(userRepository.findByCpf).toHaveBeenCalledTimes(1);
     });
+
+    it("Should return null if the provided CPF doesn't exists", async () => {
+        const cpfDTO = {
+            cpf: "CPF_not_registered"
+        }
+
+        userRepository.findByCpf.mockResolvedValueOnce(null);
+
+        const sut = searchUserByCPFUseCase({ userRepository });
+        const output = await sut(cpfDTO);
+
+        expect(output.right).toBeNull();
+        expect(userRepository.findByCpf).toHaveBeenCalledTimes(1);
+        expect(userRepository.findByCpf).toHaveBeenCalledWith(cpfDTO.cpf);
+
+    });
+
 })
