@@ -52,6 +52,9 @@ describe("Search Book by ISBN or Name", () => {
         expect(() => searchBookByIsbnOrNameUseCase({})).toThrow(new AppError(AppError.dependencies));
     });
 
-    
+    it("Should throw an app error if no search value is provided", async () => {
+        const sut = searchBookByIsbnOrNameUseCase({ bookRepository });
+        await expect(() => sut({ })).rejects.toThrow(new AppError(AppError.missingParams));
+    })
 
 });
