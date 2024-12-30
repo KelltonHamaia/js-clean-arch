@@ -1,4 +1,4 @@
-const { Either } = require("../errors");
+const { Either, AppError } = require("../errors");
 const borrowABookUseCase = require("./borrow-a-book")
 
 
@@ -62,6 +62,11 @@ describe("Borrow a book Use Case", () => {
         expect(output.left).toBe(Either.UserWithSameBookUnderPendingLoan);
         expect(loanRepository.findBooksUnderLoanFromUser).toHaveBeenCalledTimes(1);
         expect(loanRepository.findBooksUnderLoanFromUser).toHaveBeenCalledWith({ userId: borrowDTO.userId, bookId: borrowDTO.bookId });
-    })
+    });
+
+    it("Should throw an AppError id the loanRepository is not provided", () => {
+        expect(() => borrowABookUseCase({})).toThrow(AppError.dependencies);
+    });
+
 
 })
