@@ -1,3 +1,4 @@
+const { AppError } = require("../errors");
 const searchUserByCPFUseCase = require("./search-user-by-cpf")
 
 describe("Search user by CPF Use Case", () => {
@@ -45,5 +46,9 @@ describe("Search user by CPF Use Case", () => {
         expect(userRepository.findByCpf).toHaveBeenCalledWith(cpfDTO.cpf);
 
     });
+
+    it("Should throw an AppError if no userRepository is provided", () => {
+        expect(() => searchUserByCPFUseCase({ })).toThrow(AppError.dependencies);
+    })
 
 })
