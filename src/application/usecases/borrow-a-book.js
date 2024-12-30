@@ -1,8 +1,8 @@
 const { AppError, Either } = require("../errors")
 
-module.exports = function borrowABookUseCase ({ loanRepository }) {
+module.exports = function borrowABookUseCase ({ loanRepository, emailService }) {
 
-    if(!loanRepository) throw new AppError(AppError.dependencies)
+    if(!loanRepository || !emailService) throw new AppError(AppError.dependencies)
 
     return async ({ userId, bookId, departureDate, returnDate }) => {
         
@@ -14,11 +14,22 @@ module.exports = function borrowABookUseCase ({ loanRepository }) {
         const userHasBookWithUnderLoanWithSameIsbn = await loanRepository.findBooksUnderLoanFromUser({ userId, bookId });
         if(userHasBookWithUnderLoanWithSameIsbn) return Either.Left(Either.UserWithSameBookUnderPendingLoan);
 
-        await loanRepository.save({
-            userId,
-            bookId,
-            departureDate,
-            returnDate
+        const id = await loanRepository.save({
+            userId:userId,
+            bookId: bookId,
+            departureDate: departureDate,
+            returnDate: returnDate
+        });
+
+        const { user, book } = await loanRepository.findLoanById(id);
+
+        await emailService.sendEmail({
+            departureDate: departureDate,
+            returnDate: returnDate,
+            user: user.fullname,
+            email: user.email,
+            cpf: user.cpf,
+            book: book.name
         });
 
         return Either.Right(null);

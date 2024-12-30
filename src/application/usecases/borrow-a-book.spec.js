@@ -6,12 +6,27 @@ describe("Borrow a book Use Case", () => {
     
     const loanRepository = {
         save: jest.fn(),
-        findBooksUnderLoanFromUser: jest.fn()
+        findLoanById: jest.fn(),
+        findBooksUnderLoanFromUser: jest.fn(),
+    }
+
+    const emailService = {
+        sendEmail: jest.fn()
     }
 
     it("Should create a new borrow", async () => {
 
-        loanRepository.findBooksUnderLoanFromUser.mockResolvedValue(false);
+        loanRepository.save.mockResolvedValue("valid_id");
+        loanRepository.findLoanById.mockResolvedValue({
+            user: {
+                fullname: "valid user",
+                cpf:  "valid cpf",
+                email: "valid email"  
+            },
+            book: {
+                name: "valid book",
+            } 
+        });
 
         const borrowDTO = {
             userId: "valid_id",
@@ -20,14 +35,21 @@ describe("Borrow a book Use Case", () => {
             returnDate: new Date("2025-01-10")
         }
 
-        const sut = borrowABookUseCase({ loanRepository });
+        const sut = borrowABookUseCase({ loanRepository, emailService });
         const output = await sut(borrowDTO);
-
+ 
         expect(output.right).toBeNull();
         expect(loanRepository.save).toHaveBeenCalledTimes(1);
         expect(loanRepository.save).toHaveBeenCalledWith(borrowDTO);
-        expect(loanRepository.findBooksUnderLoanFromUser).toHaveBeenCalledTimes(1);
-        expect(loanRepository.findBooksUnderLoanFromUser).toHaveBeenCalledWith({ userId: borrowDTO.userId, bookId: borrowDTO.bookId });
+
+        expect(emailService.sendEmail).toHaveBeenCalledWith({
+            departureDate: borrowDTO.departureDate,
+            returnDate: borrowDTO.returnDate,
+            user: "valid user",
+            email: "valid email",
+            cpf: "valid cpf",
+            book: "valid book"
+        });
 
     });
 
@@ -39,7 +61,7 @@ describe("Borrow a book Use Case", () => {
             returnDate: new Date("2024-12-10")
         }
 
-        const sut = borrowABookUseCase({ loanRepository });
+        const sut = borrowABookUseCase({ loanRepository, emailService });
         const output = await sut(borrowDTO);
 
         expect(output.left).toBe(Either.DepartureDateLowerThanReturnDate);
@@ -56,7 +78,7 @@ describe("Borrow a book Use Case", () => {
             returnDate: new Date("2025-01-10")
         }
 
-        const sut = borrowABookUseCase({ loanRepository });
+        const sut = borrowABookUseCase({ loanRepository, emailService });
         const output = await sut(borrowDTO);
 
         expect(output.left).toBe(Either.UserWithSameBookUnderPendingLoan);
@@ -69,7 +91,7 @@ describe("Borrow a book Use Case", () => {
     });
 
     it("Should throw an AppError if some parameter is missing", async () => {
-        const sut = borrowABookUseCase({ loanRepository });
+        const sut = borrowABookUseCase({ loanRepository, emailService });
         await expect(() => sut({ })).rejects.toThrow(AppError.missingParams);
     });
 })
