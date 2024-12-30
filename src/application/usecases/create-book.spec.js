@@ -27,5 +27,11 @@ describe("Create book Use Case", () => {
 
     it("Should throw an AppError if bookRepository is not provided", () => {
         expect(() => createBookUseCase({ })).toThrow(new AppError(AppError.dependencies))      
+    });
+
+    it("Should throw an AppError if it's missing required params", async () => {
+        const sut = createBookUseCase({ bookRepository });
+        await expect(() => sut({ })).rejects.toThrow(new AppError(AppError.missingParams));
     })
+
 })
