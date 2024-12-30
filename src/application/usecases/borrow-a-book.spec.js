@@ -68,5 +68,8 @@ describe("Borrow a book Use Case", () => {
         expect(() => borrowABookUseCase({})).toThrow(AppError.dependencies);
     });
 
-
+    it("Should throw an AppError if some parameter is missing", async () => {
+        const sut = borrowABookUseCase({ loanRepository });
+        await expect(() => sut({ })).rejects.toThrow(AppError.missingParams);
+    });
 })
