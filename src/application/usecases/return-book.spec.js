@@ -1,3 +1,5 @@
+const returnBook = require("./return-book")
+
 describe("ReturnBookUsecase", () => {
 
     const loanRepository = {
@@ -11,7 +13,7 @@ describe("ReturnBookUsecase", () => {
             returnDate: new Date("2024-08-11"),
         }
 
-        const sut = returnBookUsecase({ loanRepository });
+        const sut = returnBook({ loanRepository });
         const output = await sut(returnBookDTO);
 
         expect(output.right).toBe("Fine not applied");
