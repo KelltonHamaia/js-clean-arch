@@ -1,3 +1,4 @@
+const { AppError } = require("../errors");
 const returnBook = require("./return-book")
 
 describe("ReturnBookUsecase", () => {
@@ -43,7 +44,10 @@ describe("ReturnBookUsecase", () => {
         expect(loanRepository.return).toHaveBeenCalledTimes(1);
         expect(loanRepository.return).toHaveBeenCalledWith(returnBookDTO);
 
-    })
+    });
 
+    it("Should return an AppError if no repository is provided", async () => {
+        expect(() => returnBook({ })).toThrow(new AppError(AppError.dependencies));
+    });
 
 })
