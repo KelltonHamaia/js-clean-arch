@@ -43,11 +43,14 @@ describe("ReturnBookUsecase", () => {
         expect(output.right).toBe("Fine Applied: $10.00");
         expect(loanRepository.return).toHaveBeenCalledTimes(1);
         expect(loanRepository.return).toHaveBeenCalledWith(returnBookDTO);
-
     });
 
     it("Should return an AppError if no repository is provided", async () => {
         expect(() => returnBook({ })).toThrow(new AppError(AppError.dependencies));
     });
 
+    it("Should return an AppError if there's missing params", async () => {
+        const sut = returnBook({ loanRepository });
+        await expect(()=> sut({ })).rejects.toThrow(new AppError(AppError.missingParams));
+    })
 })
