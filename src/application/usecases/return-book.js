@@ -1,3 +1,4 @@
+const loanmentEntity = require("../enterprise/entities/loanment.entity");
 const { Either, AppError } = require("../errors")
 
 module.exports = function returnBookUseCase ({ loanRepository }) {
@@ -11,9 +12,8 @@ module.exports = function returnBookUseCase ({ loanRepository }) {
 
         const { returnBookDate } = await loanRepository.return({ loanmentId, returnDate });
         
-        const applyFine = new Date(returnBookDate).getTime() < new Date(returnDate).getTime();
-        const verifyFine = applyFine ? "Fine Applied: $10.00" : "Fine not applied";
-        return Either.Right(verifyFine);
+        const applyFine = loanmentEntity.calculateFine({ returnDate, returnBookDate });
+        return Either.Right(applyFine);
     }
 
 }
