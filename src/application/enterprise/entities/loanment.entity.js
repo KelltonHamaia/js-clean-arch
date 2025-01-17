@@ -5,7 +5,7 @@ const loanEntity = () => {
 
     const calculateFine =({ returnBookDate, returnDate }) => {
         const lateDays = calculateLateDays({ returnBookDate, returnDate });
-        if(lateDays > 0) {
+        if(lateDays) {
             return "Fine Applied: $10.00"
         } else {
             return "Fine not applied"

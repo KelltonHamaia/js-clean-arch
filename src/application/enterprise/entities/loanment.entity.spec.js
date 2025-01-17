@@ -8,7 +8,7 @@ describe("LoanmentEntity", () => {
             returnDate: "2025-02-10"
         }
 
-        const sut = loanmentEntity.calculateFine(loanmentDTO);
+        const sut = loanmentEntity.calculateFine({ returnBookDate: loanmentDTO.returnBookDate, returnDate: loanmentDTO.returnDate });
         expect(sut).toBe("Fine not applied");
     })
 })
