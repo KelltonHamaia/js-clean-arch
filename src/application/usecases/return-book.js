@@ -12,7 +12,7 @@ module.exports = function returnBookUseCase ({ loanRepository }) {
 
         const { returnBookDate } = await loanRepository.return({ loanmentId, returnDate });
         
-        const applyFine = loanmentEntity.calculateFine({ returnDate, returnBookDate });
+        const applyFine = loanmentEntity.calculateFine({ returnBookDate, returnDate });
         return Either.Right(applyFine);
     }
 
