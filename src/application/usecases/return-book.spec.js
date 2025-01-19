@@ -1,5 +1,5 @@
 const { AppError } = require("../errors");
-const returnBook = require("./return-book")
+const returnBookUseCase = require("./return-book")
 
 describe("ReturnBookUsecase", () => {
 
@@ -18,7 +18,7 @@ describe("ReturnBookUsecase", () => {
             returnDate: new Date("2024-08-11"),
         }
 
-        const sut = returnBook({ loanRepository });
+        const sut = returnBookUseCase({ loanRepository });
         const output = await sut(returnBookDTO);
 
         expect(output.right).toBe("Fine not applied");
@@ -37,7 +37,7 @@ describe("ReturnBookUsecase", () => {
             returnDate: new Date("2024-08-11"),
         }
 
-        const sut = returnBook({ loanRepository });
+        const sut = returnBookUseCase({ loanRepository });
         const output = await sut(returnBookDTO);
 
         expect(output.right).toBe("Fine Applied: $10.00");
@@ -46,11 +46,11 @@ describe("ReturnBookUsecase", () => {
     });
 
     it("Should return an AppError if no repository is provided", async () => {
-        expect(() => returnBook({ })).toThrow(new AppError(AppError.dependencies));
+        expect(() => returnBookUseCase({ })).toThrow(new AppError(AppError.dependencies));
     });
 
     it("Should return an AppError if there's missing params", async () => {
-        const sut = returnBook({ loanRepository });
+        const sut = returnBookUseCase({ loanRepository });
         await expect(()=> sut({ })).rejects.toThrow(new AppError(AppError.missingParams));
     })
 })
